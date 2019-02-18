@@ -1,9 +1,9 @@
 package com.info.config;
 
-import com.info.repository.PlayerInfo;
+import com.info.repository.PlayerRepository;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@EnableMongoRepositories(basePackageClasses = PlayerInfo.class)
+@EnableMongoRepositories(basePackageClasses = PlayerRepository.class)
 public class MongoConfiguration {
 
 }

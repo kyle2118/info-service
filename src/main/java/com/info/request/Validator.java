@@ -2,7 +2,10 @@ package com.info.request;
 
 import com.info.domain.Club;
 import com.info.domain.ClubRecord;
+import com.info.domain.Country;
+import com.info.domain.League;
 import com.info.domain.Player;
+import com.info.util.Continent;
 import com.info.util.Foot;
 import com.info.util.Position;
 import org.springframework.stereotype.Component;
@@ -14,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Component
-public class Converter {
+public class Validator {
     private static final DateTimeFormatter DOB_FORMAT = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 
     public Player convertToPlayer(InsertPlayerRequest request) {
@@ -46,9 +49,20 @@ public class Converter {
 
     public Club convertToClub(InsertClubRequest request) {
         String clubName = request.getClubName();
-        checkArgument(StringUtils.isEmpty(clubName), "Club name must present");
+        checkArgument(!StringUtils.isEmpty(clubName), "Club name must present");
         String league = request.getLeague();
-        checkArgument(StringUtils.isEmpty(league), "League must present");
-        return Club.of(clubName);
+
+        checkArgument(!StringUtils.isEmpty(league), "League must present");
+        return Club.of(clubName, null);
+    }
+
+    public League convertToLeague(InsertLeagueRequest request) {
+        String leagueName = request.getName();
+        checkArgument(!StringUtils.isEmpty(leagueName), "League name must not be empty");
+        Continent continent = Continent.valueOf(request.getContinent().toUpperCase());
+        String countryName = request.getCountry();
+        checkArgument(!StringUtils.isEmpty(countryName), "League must belong to a country");
+        Country country = Country.of(countryName, continent);
+        return League.of(leagueName, country);
     }
 }
