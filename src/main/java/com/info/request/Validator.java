@@ -31,8 +31,7 @@ public class Validator {
         Foot foot = Foot.valueOf(request.getFoot());
         Position position = Position.valueOf(request.getPosition());
 //        Club club = request.getClub();
-        ClubRecord clubRecord = new ClubRecord
-                .Builder(null)
+        ClubRecord clubRecord = new ClubRecord.Builder()
                 .atPosition(position)
                 .withShirtNumber(request.getShirtNumber())
                 .scored(request.getScored()).build();
@@ -50,10 +49,18 @@ public class Validator {
     public Club convertToClub(InsertClubRequest request) {
         String clubName = request.getClubName();
         checkArgument(!StringUtils.isEmpty(clubName), "Club name must present");
-        String league = request.getLeague();
 
-        checkArgument(!StringUtils.isEmpty(league), "League must present");
-        return Club.of(clubName, null);
+        String leagueName = request.getLeague();
+        checkArgument(!StringUtils.isEmpty(leagueName), "League name must not be empty");
+
+        Continent continent = Continent.valueOf(request.getLeagueContinent().toUpperCase());
+        String countryName = request.getLeagueCountry();
+        checkArgument(!StringUtils.isEmpty(countryName), "League must belong to a country");
+
+        Country country = Country.of(countryName, continent);
+        League league = League.of(leagueName, country);
+
+        return Club.of(clubName, league);
     }
 
     public League convertToLeague(InsertLeagueRequest request) {

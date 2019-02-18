@@ -19,6 +19,7 @@ public class Club implements Formattable {
     private Club(String name, League league) {
         squad = new ArrayList<>(MAX_SQUAD_SIZE);
         this.name = name;
+        this.league = league;
     }
 
     public static Club of(String clubName, League league) {

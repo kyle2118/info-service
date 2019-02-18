@@ -3,6 +3,9 @@ package com.info.domain;
 import com.google.common.base.MoreObjects;
 import com.info.util.Foot;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -11,12 +14,18 @@ import java.util.Formattable;
 import java.util.Formatter;
 
 @Getter
+@Document
 public class Player implements Formattable, Comparable<Player> {
     private static final Comparator<Player> PLAYER_COMPARATOR = Comparator
             .comparing((Player p) -> p.firstName)
             .thenComparing((p -> p.lastName));
+    @Id
+    private String id;
+    @Indexed
     private String lastName;
+    @Indexed
     private String firstName;
+    @Indexed
     private String country;
     private LocalDate dob;
     private Foot foot;

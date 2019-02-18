@@ -1,17 +1,16 @@
 package com.info.controller;
 
 import com.info.domain.Club;
-import com.info.domain.League;
 import com.info.domain.Player;
-import com.info.repository.LeagueInfo;
+import com.info.repository.ClubInfo;
+import com.info.repository.ClubRepository;
 import com.info.repository.LeagueRepository;
 import com.info.request.InsertClubRequest;
-import com.info.request.InsertLeagueRequest;
 import com.info.request.InsertPlayerRequest;
 import com.info.request.InvalidClubException;
-import com.info.request.InvalidLeagueException;
 import com.info.request.InvalidPlayerException;
 import com.info.request.Validator;
+import com.info.response.ClubUi;
 import com.info.service.LeagueService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,15 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @RestController
 public class ServiceController {
     private LeagueService leagueService;
     private LeagueRepository leagueRepo;
+    private ClubRepository clubRepo;
     private Validator converter;
 
-    public ServiceController(LeagueService leagueService, LeagueRepository leagueRepo, Validator converter) {
+    public ServiceController(LeagueService leagueService, LeagueRepository leagueRepo, ClubRepository clubRepo, Validator converter) {
         this.leagueService = leagueService;
         this.leagueRepo = leagueRepo;
+        this.clubRepo = clubRepo;
         this.converter = converter;
     }
 
@@ -53,8 +56,11 @@ public class ServiceController {
         String response;
         try {
             Club club = converter.convertToClub(request);
-            response = "Club created";
             System.err.println("Club created: " + club);
+            ClubInfo clubInfo = leagueService.createClub(club);
+            clubRepo.deleteAll();
+            clubRepo.insert(clubInfo);
+            response = "Club created";
         } catch (IllegalArgumentException e) {
             System.err.println("Club not created!");
             throw new InvalidClubException(e.getMessage());
@@ -62,19 +68,10 @@ public class ServiceController {
         return response;
     }
 
-    @PostMapping(value = "/league")
-    public String insertLeague(@RequestBody InsertLeagueRequest request) throws InvalidLeagueException {
-        String response;
-        try {
-            League league = converter.convertToLeague(request);
-            LeagueInfo leagueInfo = LeagueInfo.of(league.getName(), league.getCountry().getName());
-            leagueRepo.save(leagueInfo);
-            response = "Club created";
-            System.err.println("League created: " + league);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Club not created!");
-            throw new InvalidLeagueException(e.getMessage(), e);
-        }
-        return response;
+    @GetMapping(value = "/club/{clubName}")
+    public ClubUi getClub(@PathVariable String clubName) {
+        checkArgument(clubName != null, "Club Name must not be empty!");
+        return null;
     }
+
 }
