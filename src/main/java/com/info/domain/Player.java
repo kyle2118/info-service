@@ -1,22 +1,14 @@
 package com.info.domain;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.common.base.MoreObjects;
 import com.info.util.Foot;
-import com.info.util.Position;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Formattable;
 import java.util.Formatter;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 @Getter
 public class Player implements Formattable, Comparable<Player> {
@@ -57,27 +49,8 @@ public class Player implements Formattable, Comparable<Player> {
         return PLAYER_COMPARATOR.compare(this, o);
     }
 
-
-    private void transferSupplier(Supplier<ClubRecord> supplier) {
-        this.clubRecord = supplier.get();
-    }
-
     private void setClubRecord(ClubRecord clubRecord) {
         this.clubRecord = clubRecord;
-    }
-
-
-
-
-    public static void main(String[] args) {
-        Player player = new Player("Baktybek uulu", "Kyialbek", null, "Kyrgyzstan", null, Foot.R);
-        ClubRecord clubRecord1 = ClubRecord.of("Ajax", Position.CMF, (byte)21, (short)34);
-        ClubRecord clubRecord2 = ClubRecord.of("Barcelona", Position.CMF, (byte)21, (short)34);
-
-        player.transferSupplier(() -> clubRecord1);
-        player.transferSupplier(() -> clubRecord2);
-        player.setClubRecord(clubRecord1);
-
     }
 
     public static class PlayerBuilder {
