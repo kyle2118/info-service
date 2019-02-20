@@ -9,7 +9,12 @@ public final class Converter {
     }
 
     public static LeagueInfo toLeagueInfo(@NotNull League league) {
-        return LeagueInfo.of(league.getName(), league.getCountry().getName());
+        return null;
+//        return LeagueInfo
+//                .createBuilder()
+//                .withName(league.getName())
+//                .from(league.getCountry())
+//                .in(league.getName());
     }
 
 }
